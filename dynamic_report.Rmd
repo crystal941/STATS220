@@ -1,0 +1,164 @@
+---
+title: My dynamic report
+output: html_fragment
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, error=FALSE)
+
+```
+
+```{css}
+
+body {
+  max-width: 800px;
+  margin: 0 auto;
+  font-family: "Helvetica", "Arial", sans-serif;
+  line-height: 1.5;
+}
+
+h2 {
+  padding: 15px;
+  background-color: #f4f4f9;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+h3, p {
+   padding: 0 15px 0 15px;
+}
+
+strong {
+  font-size: 1.5em;
+}
+
+strong:hover {
+  color: red; /* Change color on hover */
+  text-decoration: underline; /* Underline text on hover */
+}
+
+img {
+  display: block;
+  margin: 20px auto; /* Add space above and below the image */
+  border: 2px solid #ddd; /* Fine border around the image */
+  padding: 5px; /* Optional: space between image and border */
+}
+
+```
+
+## How distracted was I during my study sessions?
+
+Curious about how often I check my phone while studying? Well, let's take a look and find out together! &#x1F4F1;
+
+Oh, and just a friendly reminder - please don't judge me too harshly on whether I'm a good or bad student based on this. Promise? &#x1F605;
+
+```{r}
+library(tidyverse)
+
+csv_file <- "https://docs.google.com/spreadsheets/d/e/2PACX-1vTwy0kVghXbFIgFpE915yWlyIMiyFWunFn7_es20b8BheGEyYV3wjb3RXKqv2JM7w8nyMJ5QazTIslX/pub?gid=380314049&single=true&output=csv"
+
+logged_data <- read_csv(csv_file)
+
+latest_data <- logged_data %>%
+  rename(timestamp = 1,
+         consent = 2,
+         study_day = 3,
+         start_time = 4,
+         study_duration = 5,
+         phone_usage = 6,
+         usage_count = 7,
+         first_usage = 8,
+         usage_length = 9,
+         usage_activities = 10,
+         usage_reason = 11,
+         feeling = 12,
+         focus_aid = 13)
+
+latest_data_longer <- latest_data %>%
+  separate_rows(usage_activities, sep = ", ")
+
+# Value 1: Find out the total count of study sessions
+session_count <- nrow(latest_data)
+
+# Value 2: Find out the total study hours
+study_total_hour <- (sum(latest_data$study_duration) / 60) %>% 
+  round(1)
+
+# Value 3: Find out the total count of phone usage occurrences per study hour
+usage_per_hour <- (sum(latest_data$usage_count, na.rm = TRUE) / study_total_hour) %>%
+  round(0)
+
+```
+
+### Are you ready?
+
+![](./my_study_sessions.gif)
+
+In total, I have done **`r session_count`** study sessions so far, and that is a total of **`r study_total_hour`** hours of focused study! On average, I have picked up my phone **`r usage_per_hour`** times per study hour. 
+
+Do you reckon I was focused enough? &#x1F60A;
+
+Surprisingly, in some of my study sessions, I didn't touch my phone even once! But overall, I found myself picking up my phone during most of my study sessions.
+
+
+```{r}
+
+# Bar chart 1: Comparison of phone usage (Used vs. Not used)
+# This chart shows how many times the phone was used and not used during study sessions
+ggplot(data = latest_data) +
+  geom_bar(aes(x = phone_usage),
+           fill = "#B6DEE3",
+           color = "#000000") +
+  labs(title = "Phone Usage During Study Sessions",
+       subtitle = "Comparing how many times the phone was used vs. not used",
+       x = "Phone Usage (Yes or No)",
+       y = "Count of Occurrences")
+
+```
+
+What did I do when I use my phone? Hmm...
+
+Most of the time, I was engaged in communication, such as messaging friends or making phone calls. Entertainment is also noticeable, where I used my phone for listening to music or checking on the mobile game that I have been playing. It follows by study-related activities such as using dictionary (FYI, I am studying Korean right now!), checking tasks, and organising my study TO-DOs. 
+
+As you can see from the chart, I'm not a big fan of social media or online shopping. Just not my thing! &#x1F605;
+
+
+``` {r}
+
+# Bar chart 2: Phone usage activities
+# This chart shows what activities I used on phone during study sessions
+ggplot(data = na.omit(latest_data_longer)) +
+  geom_bar(aes(y = usage_activities),
+           fill = "#A6CEE3", 
+           color = "#000000") +
+  labs(title = "Phone Usage Activities During Study Sessions",
+       subtitle = "A breakdown of activities used on the phone while studying",
+       x = "Count of Occurrences",
+       y = "Activity Type")
+
+```
+
+Well, most of the time I picked up my phone because I received a notification. But there were also moments that I hit a difficult point in studies and feeling like a pause. Or sometimes, I just needed a mental break from all the intense studying (computer science is fun, but to be honest, it can be challenging!). 
+
+Also, there might be some other reasons but yet to be discovered... &#x1F60A;
+
+``` {r}
+
+# Bar chart 3: Phone usage triggering reasons
+# This chart shows the factors that triggered phone usage during study sessions
+ggplot(data = na.omit(latest_data)) +
+  geom_bar(aes(x = usage_reason),
+           fill = "#A6BEE3",
+           color = "#000000") +
+  labs(title = "Reasons For Phone Usage During Study Sessions",
+       subtitle = "A breakdown of factors triggering phone usage while studying",
+       x = "Usage Reason",
+       y = "Count of Occurrences")
+
+```
+
+Alright, time for getting back to studying! &#x1F4D6;
+
+![](https://media.tenor.com/lo-2q8c5pVIAAAAi/cat-cats.gif)
+
+_Please Note: The bar chart GIF at the very beginning of this report needs to run the codes in the ```exploration.R``` file to be updated, so it won't be rendered dynamically, at least not for now!_
