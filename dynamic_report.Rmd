@@ -162,4 +162,4 @@ Alright, time for getting back to studying! &#x1F4D6;
 
 ![](https://media.tenor.com/lo-2q8c5pVIAAAAi/cat-cats.gif)
 
-_Please Note: The bar chart GIF at the very beginning of this report needs to run the codes in the ```exploration.R``` file to be updated, so it won't be rendered dynamically, at least not for now!_
+_Please Note: The bar chart GIF at the very beginning of this report needs to run the codes in the `exploration.R` file to be updated, so it won't be rendered dynamically, at least not for now!_
