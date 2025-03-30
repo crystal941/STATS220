@@ -92,7 +92,7 @@ usage_per_hour <- (sum(latest_data$usage_count, na.rm = TRUE) / study_total_hour
 
 ### Are you ready?
 
-![](./my_study_sessions.gif)
+![](https://crystal941.github.io/STATS220/my_study_sessions.gif)
 
 In total, I have done **`r session_count`** study sessions so far, and that is a total of **`r study_total_hour`** hours of focused study! On average, I have picked up my phone **`r usage_per_hour`** times per study hour. 
 
